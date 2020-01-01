@@ -1,0 +1,733 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>百格线刻字</title>
+	<style>
+	.divc{
+	border-width: 1px;
+	border-style: solid;
+	display: inline-block;
+	margin-top: 2px;
+	color: #FFA0A2;	
+	transform: rotate(0deg);
+		}
+		#left{
+	background-color: aqua;
+	border: 3px solid #FFFFFF;
+	width: 30px;
+	height: 30px;			
+		}
+		#right{
+	background-color: aqua;
+	border: 3px dashed #585858;
+	width: 30px;
+	height: 30px;
+		}
+		#jia{
+	background-color: aqua;
+	border: 3px dashed #585858;
+	width: 50px;
+	height: 30px;
+		}
+		#jian{
+	background-color: aqua;
+	border: 3px solid #FFFFFF;
+	width: 50px;
+	height: 30px;
+		}
+		#dui{
+	background-color: aqua;
+	border: 3px solid #FFFFFF;
+	width: 50px;
+	height: 30px;
+		}
+		#num{
+			height: 17px;
+		}
+		.inputc{
+			display: none;
+		}
+		p{
+			background-color: beige;
+		}
+		.btnn{
+			background-color: #00FFFF;
+			width: 80px;
+			height: 20px;
+			border: 3px;
+		}
+		.finish{
+			background-color: #49F086;
+			width: 150px;
+			height: 30px;
+			border: 3px dashed #FFFCFC;
+		}
+	</style> 
+</head>
+
+<body>
+	<p>选第一串字符位置</p>
+	<button id="choarea" class="btnn">正视图</button>&nbsp;<button id="chofin" class="btnn">完成</button>
+	<p><input id="blockxmin" class="inputc" value="1" size="1"><input id="blockxmax" class="inputc" value="1" size="1"><input id="blockymin" class="inputc" value="1" size="1"><input id="blockymax" class="inputc" value="1" size="1"></p>
+	<p>首个字符</p>
+	<div>
+		<select id="chos" onChange="fc()">
+			<option value="X" selected="selected">X</option>
+			<option value="Y">Y</option>
+			<option value="Z">Z</option>
+		</select>
+		<select id="zf" onChange="fc()">
+			<option value="+" selected="selected">+</option>
+			<option value="-">-</option>
+		</select>
+		<input type="text" id="index" value="100" size="5" onblur="fc()">
+	</div>
+	<br>
+	<button id="tan" onclick="tan()" class="btnn" style="width: 150px;">旋转字体方向</button><input id="fontfx" class="inputc" value="1" size="1"><input id="tanfx" class="inputc" value="0" size="1"><input id="tund" class="inputc" onclick="tundfun()" value="0" size="1">
+	<p>阵列方向</p>
+	
+<div id="lr"><button id="left">↑</button><button id="right">↓</button><input id="fx" class="inputc" value="2" size="1"></div>
+	<p>+-</p>
+<button id="jian">递减</button><button id="jia">递增</button> <input id="dg" class="inputc" value="2" size="1">
+<button id="dui">对称</button><input id="db" class="inputc" value="0" size="1"> <br>
+	<p>数量</p>
+<input type="text" id="num" onblur="fc()" value="5" size="5">
+	<p>预览</p>
+	<div id="reo">
+		<div class="divc" id="div0">X+100</div><br>
+		<div class="divc" id="div1">X+200</div><br>
+		<div class="divc" id="div2">X+300</div><br>
+		<div class="divc" id="div3">X+400</div><br>
+		<div class="divc" id="div4">X+500</div><br>
+	</div>
+	
+<br>
+	<button id="enter"  class="finish">生  成</button>
+	<p class="inputc">7.测试 <button id="test">测试</button></p> 
+	<hr>
+<p>https://www.pmill.com.cn/</p>
+<p>liu_lee</p>	
+	<script type="text/javascript">	
+	var reo = document.getElementById("reo");
+	var tan = document.getElementById("tan");
+	var left = document.getElementById("left");
+	var right = document.getElementById("right");
+	var dui = document.getElementById("dui");
+	var enter = document.getElementById("enter");
+	var tanfx = document.getElementById("tanfx");
+	var num = Number(document.getElementById("num").value);
+	var index = Number(document.getElementById("index").value);
+	var chos = document.getElementById("chos").value;
+	var zf = document.getElementById("zf").value;
+	var dg = document.getElementById("dg").value;
+	var fontfx = document.getElementById("fontfx").value
+	var fx = document.getElementById("fx").value;
+	var db = document.getElementById("db").value;
+	var ffx = 0
+	var divv = ""
+	var divid = ""
+	var br = "<br>";
+	var sty = ""
+	left.onclick = function(){
+		left.style.border = "3px dashed #585858";
+		right.style.border = "3px solid #FFFFFF";
+		document.getElementById("fx").value = 1;
+		fc()
+	}
+	right.onclick = function(){
+		right.style.border = "3px dashed #585858";
+		left.style.border = "3px solid #FFFFFF";
+		document.getElementById("fx").value = 2;
+		fc()
+	}
+	jia.onclick = function(){
+		jia.style.border = "3px dashed #585858";
+		jian.style.border = "3px solid #FFFFFF";
+		document.getElementById("dg").value = 2;
+		fc()
+	}
+	jian.onclick = function(){
+		jian.style.border = "3px dashed #585858";
+		jia.style.border = "3px solid #FFFFFF";
+		document.getElementById("dg").value = 1;
+		fc()
+	}
+	dui.onclick = function(){
+		
+		if ( document.getElementById("db").value == 0 ) {
+			document.getElementById("db").value = 1;
+			dui.style.border = "3px dashed #585858";
+		}else{
+			document.getElementById("db").value = 0;
+			dui.style.border = "3px solid #FFFFFF";
+		}
+		fc()
+	}
+	tan.onclick = function(){
+		divv = ""
+		num = Number(document.getElementById("num").value)
+		if (document.getElementById("fontfx").value == 1){
+			sty = "rotate(180deg)"
+			document.getElementById("tanfx").value = 0;
+			ffx = 2;
+		}
+		if (document.getElementById("fontfx").value == 2){
+			sty = "rotate(90deg)"
+			document.getElementById("tanfx").value = 1;
+			ffx = 3;
+		}			
+		if (document.getElementById("fontfx").value == 3){
+			sty = "rotate(-90deg)"
+			document.getElementById("tanfx").value = 1;
+			ffx = 4;
+		}
+		if (document.getElementById("fontfx").value == 4){
+			sty = "rotate(0deg)"
+			document.getElementById("tanfx").value = 0;
+			ffx = 1;
+		}
+			document.getElementById("fontfx").value = ffx;
+		if (document.getElementById("tanfx").value == 1){
+			left.innerHTML = "←";
+			right.innerHTML = "→";
+		}else{
+			left.innerHTML = "↑";
+			right.innerHTML = "↓";
+		}
+		fc();
+	}	
+	function tundfun(){
+		if (document.getElementById("tund").value == "1") {
+		document.getElementById("tanfx").value = 1;
+		sty = "rotate(90deg)";
+		document.getElementById("fontfx").value = 3;
+		left.innerHTML = "←";
+		right.innerHTML = "→";
+		fc();
+		}
+	}
+	function fc(){
+	 	index = Number(document.getElementById("index").value);
+	 	chos = document.getElementById("chos").value;
+		zf = document.getElementById("zf").value;
+		num = Number(document.getElementById("num").value);
+		zf = document.getElementById("zf").value;
+		dg = document.getElementById("dg").value;
+		fontfx = document.getElementById("fontfx").value;
+		fx = document.getElementById("fx").value;
+		db = document.getElementById("db").value;
+		var numn = 0;
+		var arr = [];
+		var u = 0 ;  
+		if (document.getElementById("zf").value == "-") {
+			index = 0 - Number(document.getElementById("index").value)
+		}
+		for (i=0;i<num;i++){
+			numn = (index+u);
+			if (numn==0){
+				zf="";
+			}
+			if (numn>0){
+				zf="+";
+			}			
+			if (numn<0){
+				zf="";
+			}
+			if (fx==2){
+				arr.push(chos+zf+numn);	
+			}else{
+				arr.unshift(chos+zf+numn);	
+			}
+			if (dg==2){
+				u = u+100;
+			}else{
+				u = u-100;
+			}
+		}
+		var m = arr.length;
+		var n = parseInt(m/2);
+		if (db==1){
+			var c = 0;
+			var fs = "+";
+			for (i=(m-1);i>(n-1);i--) {	
+				if (0-(Number(arr[c].substr(1)))>0) {
+					fs = "+";
+					if (0-(Number(arr[c].substr(1)))==-0) {
+						fs = "";
+					}
+				}else{
+					fs = "";
+				}
+				arr[i] = chos + fs + (0-(Number(arr[c].substr(1))));
+				c = c+1;
+			}
+			if ((m/2)>n){	
+				if ((arr[n].length) > 3) {
+					arr[n] = chos + "±" + Math.abs((0-(Number(arr[n].substr(2)))));
+				}
+			}
+		}		
+		tanfx = document.getElementById("tanfx").value;
+		if (tanfx==0){
+			br = "<br>";
+		}else{
+			br = "";
+		}
+		reo.innerHTML = "";
+		fontfx=document.getElementById("fontfx").value;
+		for (i=0;i<m;i++){
+			divid ="div"+i;
+			reo.innerHTML = reo.innerHTML + "<div class='divc' id='" + divid + "'>" + arr[i] + "</div>" + br;		
+		}
+		for (i=0;i<num;i++) {
+			divv = document.getElementById("div"+i);
+			divv.style.transform = sty;
+		}
+	}
+
+	</script>
+	<script language="vbscript">
+		Set PM=Window.External
+		sub window_onload()
+			PM.DoCommand("ECHO OFF DCPDEBUG UNTRACE COMMAND ACCEPT")
+			PM.DoCommand("VIEW BROWSER_WIDTH '450'"	) 			
+		end sub
+		sub choarea_onclick()
+			PM.DoCommand("ECHO OFF DCPDEBUG UNTRACE COMMAND ACCEPT")
+			PM.DoCommand("ROTATE TRANSFORM TOP")
+			PM.DoCommand("VIEW MODEL ; SHADE OFF")
+			PM.DoCommand("VIEW MODEL ; WIREFRAME ON")
+		end sub
+		sub chofin_onclick()
+			PM.DoCommand("ECHO OFF DCPDEBUG UNTRACE COMMAND ACCEPT")
+			PM.DoCommand("FORM BLOCK") 
+			PM.DoCommand("EDIT BLOCK ALL UNLOCK") 
+			PM.DoCommand("CURVEEDITOR FINISH ACCEPT") 
+			PM.DoCommand("EDIT BLOCKTYPE BOX") 
+			PM.DoCommand("EDIT BLOCK COORDINATE WORKPLANE") 
+			PM.DoCommand("EDIT BLOCK RESETLIMIT '0'") 
+			PM.DoCommand("EDIT BLOCK LIMITTYPE MODEL") 
+			PM.DoCommand("EDIT BLOCK RESET") 
+			PM.DoCommandEx("print = block.Limits.xmin"),strRes
+			blockxmin.value = strRes
+			PM.DoCommandEx("print = block.Limits.xmax"),strRes
+			blockxmax.value = strRes			
+			PM.DoCommandEx("print = block.Limits.ymin"),strRes
+			blockymin.value = strRes		
+			PM.DoCommandEx("print = block.Limits.ymax"),strRes
+			blockymax.value = strRes
+			PM.DoCommand("BLOCK CANCEL") 
+			if (blockxmax.value-blockxmin.value)<(blockymax.value-blockymin.value) then
+				tund.value = "1"
+				tund.click
+			end if	
+		end sub
+		sub enter_onclick()	
+			PM.DoCommand("ECHO OFF DCPDEBUG UNTRACE COMMAND ACCEPT")
+			if blockxmin.value = "1" then	
+			msgbox("还没有指定位置")
+			exit sub	
+			end if
+			PM.DoCommandEx("print = workplane.name"),strRes
+			nowworkplanename = left(strRes,len(strres)-2)	
+			PM.DoCommandEx("print = new_entity_name('workplane',workplane.name)"),strRes
+			copyworkplanename = left(strRes,len(strres)-2)
+			PM.DoCommandEx("print = new_entity_name('workplane')"),strRes
+			newworkplanename = left(strRes,len(strres)-2)
+			PM.DoCommand("COPY WORKPLANE ;") 
+			PM.DoCommand("ACTIVATE Workplane '"&copyworkplanename&"'") 
+			PM.DoCommand("RENAME Workplane '"&copyworkplanename&"' '"&newworkplanename&"'") 
+			PM.DoCommand("MODE WORKPLANE_EDIT START ;") 
+			PM.DoCommand("MODE WORKPLANE_EDIT POSITION") 
+			if fontfx = "1" then
+				PM.DoCommand("MODE POSITION CARTESIAN X '"&blockxmin.value&"'") 
+				PM.DoCommand("MODE POSITION CARTESIAN y '"&blockymin.value&"'")
+				PM.DoCommand("POSITION APPLY") 
+			end if
+			if fontfx = "2" then	
+				PM.DoCommand("MODE POSITION CARTESIAN X '"&blockxmax.value&"'") 
+				PM.DoCommand("MODE POSITION CARTESIAN y '"&blockymax.value&"'") 
+				PM.DoCommand("POSITION APPLY") 
+				PM.DoCommand("MODE WORKPLANE_EDIT TWIST Z") 
+				PM.DoCommand("MODE WORKPLANE_EDIT TWIST '180'") 
+				PM.DoCommand("WPETWIST ACCEPT") 
+			end if
+			if fontfx = "3" then	
+				PM.DoCommand("MODE POSITION CARTESIAN X '"&blockxmin.value&"'") 
+				PM.DoCommand("MODE POSITION CARTESIAN y '"&blockymax.value&"'") 
+				PM.DoCommand("POSITION APPLY") 
+				PM.DoCommand("MODE WORKPLANE_EDIT TWIST Z") 
+				PM.DoCommand("MODE WORKPLANE_EDIT TWIST '-90'") 
+				PM.DoCommand("WPETWIST ACCEPT") 
+			end if				
+			if fontfx = "4" then	
+				PM.DoCommand("MODE POSITION CARTESIAN X '"&blockxmax.value&"'") 
+				PM.DoCommand("MODE POSITION CARTESIAN y '"&blockymin.value&"'") 
+				PM.DoCommand("POSITION APPLY")
+				PM.DoCommand("MODE WORKPLANE_EDIT TWIST Z") 
+				PM.DoCommand("MODE WORKPLANE_EDIT TWIST '90'") 
+				PM.DoCommand("WPETWIST ACCEPT") 
+			end if				
+			if fx = "1" then	
+				PM.DoCommand("MODE WORKPLANE_EDIT POSITION")
+					if fontfx = "1" then	
+						PM.DoCommand("MODE POSITION CARTESIAN y '"&(num-1)*100&"'")
+					end if
+					if fontfx = "2" then	
+						PM.DoCommand("MODE POSITION CARTESIAN y '-"&(num-1)*100&"'")
+					end if
+					if fontfx = "3" then	
+						PM.DoCommand("MODE POSITION CARTESIAN y '-"&(num-1)*100&"'")
+					end if
+					if fontfx = "4" then	
+						PM.DoCommand("MODE POSITION CARTESIAN y '"&(num-1)*100&"'")
+					end if
+				PM.DoCommand("POSITION APPLY") 
+			end	if 
+			PM.DoCommand("MODE WORKPLANE_EDIT FINISH ACCEPT") 	
+			PM.DoCommand("CREATE PATTERN ;") 
+			inum = Number(document.getElementById("num").value)-1
+			for pl = 0 to inum
+				divsid = "div"&pl
+				divs=document.getElementById(divsid).innerHTML
+				lenx = 0
+				for u = 1 to (len(divs))
+					divtext = mid(divs,u,1)
+					if divtext = "X" then
+						PM.DoCommand("EDIT PATTERN ; CURVEEDITOR START") 
+						PM.DoCommand("CURVEEDITOR MODE LINE_SINGLE")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 0.066426 7.03273 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 4.732448 0.037977 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 4.732448 7.03273 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 0.066426 0.037977 0")
+						PM.DoCommand("CURVEEDITOR FINISH ACCEPT")
+						PM.DoCommand("MODE WORKPLANE_EDIT START ;")
+						PM.DoCommand("MODE WORKPLANE_EDIT POSITION")
+						PM.DoCommand("MODE POSITION CARTESIAN X '4.8'")
+						PM.DoCommand("POSITION ACCEPT")
+						PM.DoCommand("MODE WORKPLANE_EDIT FINISH ACCEPT")
+						lenx = lenx + 4.8
+					end if
+					if divtext = "Y" then
+						PM.DoCommand("EDIT PATTERN ; CURVEEDITOR START") 
+						PM.DoCommand("CURVEEDITOR MODE LINE_SINGLE")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 0.066426 6.997422 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 2.400634 3.532916 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 2.400634 3.532916 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 4.732448 6.997422 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 2.400634 3.532916 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 2.398286 0 0")
+						PM.DoCommand("CURVEEDITOR FINISH ACCEPT")
+						PM.DoCommand("MODE WORKPLANE_EDIT START ;")
+						PM.DoCommand("MODE WORKPLANE_EDIT POSITION")
+						PM.DoCommand("MODE POSITION CARTESIAN X '4.8'")
+						PM.DoCommand("POSITION ACCEPT")
+						PM.DoCommand("MODE WORKPLANE_EDIT FINISH ACCEPT")
+						lenx = lenx + 4.8
+					end if
+					if divtext = "Z" then
+						PM.DoCommand("EDIT PATTERN ; CURVEEDITOR START") 
+						PM.DoCommand("CURVEEDITOR MODE LINE_MULTI")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 0.147122 7.071352 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 4.807122 7.071352 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 0.121895 0.066262 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 4.810751 0.066262 0")
+						PM.DoCommand("CURVEEDITOR FINISH ACCEPT")
+						PM.DoCommand("MODE WORKPLANE_EDIT START ;")
+						PM.DoCommand("MODE WORKPLANE_EDIT POSITION")
+						PM.DoCommand("MODE POSITION CARTESIAN X '4.8'")
+						PM.DoCommand("POSITION ACCEPT")
+						PM.DoCommand("MODE WORKPLANE_EDIT FINISH ACCEPT")
+						lenx = lenx + 4.8
+					end if
+					if divtext = "±" then
+						PM.DoCommand("EDIT PATTERN ; CURVEEDITOR START") 
+						PM.DoCommand("CURVEEDITOR MODE LINE_SINGLE")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 2.000002 4.40404 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 6.66363 4.40404 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 4.331816 6.737374 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 4.331816 2.070707 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 2.000002 0.90404 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 6.66363 0.90404 0")
+						PM.DoCommand("CURVEEDITOR FINISH ACCEPT")
+						PM.DoCommand("MODE WORKPLANE_EDIT START ;")
+						PM.DoCommand("MODE WORKPLANE_EDIT POSITION")
+						PM.DoCommand("MODE POSITION CARTESIAN X '6.7'")
+						PM.DoCommand("POSITION ACCEPT")
+						PM.DoCommand("MODE WORKPLANE_EDIT FINISH ACCEPT")
+						lenx = lenx + 6.7
+					end if
+					if divtext = "-" then
+						PM.DoCommand("EDIT PATTERN ; CURVEEDITOR START") 
+						PM.DoCommand("CURVEEDITOR MODE LINE_SINGLE")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 2.0 3.570707 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 6.663628 3.570707 0")
+						PM.DoCommand("CURVEEDITOR FINISH ACCEPT")
+						PM.DoCommand("MODE WORKPLANE_EDIT START ;")
+						PM.DoCommand("MODE WORKPLANE_EDIT POSITION")
+						PM.DoCommand("MODE POSITION CARTESIAN X '6.7'")
+						PM.DoCommand("POSITION ACCEPT")
+						PM.DoCommand("MODE WORKPLANE_EDIT FINISH ACCEPT")
+						lenx = lenx + 6.7
+					end if
+					if divtext = "+" then
+						PM.DoCommand("EDIT PATTERN ; CURVEEDITOR START") 
+						PM.DoCommand("CURVEEDITOR MODE LINE_SINGLE")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 2.000002 3.570707 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 6.66363 3.570707 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 4.331816 5.90404 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 4.331816 1.237374 0")
+						PM.DoCommand("CURVEEDITOR FINISH ACCEPT")
+						PM.DoCommand("MODE WORKPLANE_EDIT START ;")
+						PM.DoCommand("MODE WORKPLANE_EDIT POSITION")
+						PM.DoCommand("MODE POSITION CARTESIAN X '6.7'")
+						PM.DoCommand("POSITION ACCEPT")
+						PM.DoCommand("MODE WORKPLANE_EDIT FINISH ACCEPT")
+						lenx = lenx + 6.7
+					end if
+					if divtext = "0" then
+						PM.DoCommand("EDIT PATTERN ; CURVEEDITOR START") 
+						PM.DoCommand("CURVEEDITOR MODE LINE_MULTI")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 2.08 5.899267 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 3.247686 7.067306 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 4.405421 7.067306 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 5.573107 5.899267 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 5.573107 1.243435 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 4.405512 0.08 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 3.247595 0.08 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 2.08 1.243435 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 2.08 5.899267 0")
+						PM.DoCommand("CURVEEDITOR FINISH ACCEPT")
+						PM.DoCommand("MODE WORKPLANE_EDIT START ;")
+						PM.DoCommand("MODE WORKPLANE_EDIT POSITION")
+						PM.DoCommand("MODE POSITION CARTESIAN X '5.6'")
+						PM.DoCommand("POSITION ACCEPT")
+						PM.DoCommand("MODE WORKPLANE_EDIT FINISH ACCEPT")
+						lenx = lenx + 5.6
+					end if
+					if divtext = "1" then
+						PM.DoCommand("EDIT PATTERN ; CURVEEDITOR START") 
+						PM.DoCommand("CURVEEDITOR MODE LINE_SINGLE")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 2.08 5.899267 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 3.22407 7.141736 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 3.22407 7.141736 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 3.22407 0.146662 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 2.056989 0.146662 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 4.391151 0.146662 0")
+						PM.DoCommand("CURVEEDITOR FINISH ACCEPT")
+						PM.DoCommand("MODE WORKPLANE_EDIT START ;")
+						PM.DoCommand("MODE WORKPLANE_EDIT POSITION")
+						PM.DoCommand("MODE POSITION CARTESIAN X '4.5'")
+						PM.DoCommand("POSITION ACCEPT")
+						PM.DoCommand("MODE WORKPLANE_EDIT FINISH ACCEPT")
+						lenx = lenx + 4.5
+					end if
+					if divtext = "2" then
+						PM.DoCommand("EDIT PATTERN ; CURVEEDITOR START") 
+						PM.DoCommand("CURVEEDITOR MODE LINE_MULTI")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 2.075909 5.974609 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 3.239313 7.138013 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 5.543641 7.138013 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 6.753036 5.970114 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 6.753036 4.800114 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 5.58631 3.633388 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 3.24631 3.633388 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 2.079583 2.466662 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 2.079583 0.146662 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 6.739583 0.146662 0")
+						PM.DoCommand("CURVEEDITOR FINISH ACCEPT")
+						PM.DoCommand("MODE WORKPLANE_EDIT START ;")
+						PM.DoCommand("MODE WORKPLANE_EDIT POSITION")
+						PM.DoCommand("MODE POSITION CARTESIAN X '6.8'")
+						PM.DoCommand("POSITION ACCEPT")
+						PM.DoCommand("MODE WORKPLANE_EDIT FINISH ACCEPT")
+						lenx = lenx + 6.8
+					end if
+					if divtext = "3" then
+						PM.DoCommand("EDIT PATTERN ; CURVEEDITOR START") 
+						PM.DoCommand("CURVEEDITOR MODE LINE_MULTI")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 2.056943 5.974609 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 3.223669 7.141336 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 5.553669 7.141336 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 6.713324 5.98168 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 6.713324 4.81168 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 5.547589 3.64436 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 6.722184 2.471361 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 6.722184 1.316361 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 5.551922 0.146099 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 3.221922 0.146099 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 2.056943 1.309416 0")
+						PM.DoCommand("CURVEEDITOR MODE LINE_SINGLE")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 5.547589 3.64436 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 4.391151 3.64436 0")
+						PM.DoCommand("CURVEEDITOR FINISH ACCEPT")
+						PM.DoCommand("MODE WORKPLANE_EDIT START ;")
+						PM.DoCommand("MODE WORKPLANE_EDIT POSITION")
+						PM.DoCommand("MODE POSITION CARTESIAN X '6.8'")
+						PM.DoCommand("POSITION ACCEPT")
+						PM.DoCommand("MODE WORKPLANE_EDIT FINISH ACCEPT")
+						lenx = lenx + 6.8
+					end if
+					if divtext = "4" then
+						PM.DoCommand("EDIT PATTERN ; CURVEEDITOR START") 
+						PM.DoCommand("CURVEEDITOR MODE LINE_MULTI")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 6.820233 2.538421 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 2.152979 2.541682 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 5.6555 7.199105 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 5.6555 0.212121 0")
+						PM.DoCommand("CURVEEDITOR FINISH ACCEPT")
+						PM.DoCommand("MODE WORKPLANE_EDIT START ;")
+						PM.DoCommand("MODE WORKPLANE_EDIT POSITION")
+						PM.DoCommand("MODE POSITION CARTESIAN X '6.9'")
+						PM.DoCommand("POSITION ACCEPT")
+						PM.DoCommand("MODE WORKPLANE_EDIT FINISH ACCEPT")
+						lenx = lenx + 6.9
+					end if
+					if divtext = "5" then
+						PM.DoCommand("EDIT PATTERN ; CURVEEDITOR START") 
+						PM.DoCommand("CURVEEDITOR MODE LINE_MULTI")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 6.739583 7.212674 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 2.069583 7.212674 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 2.069583 4.882674 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 5.569583 4.882674 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 6.73631 3.715947 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 6.73631 1.375947 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 5.576655 0.216292 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 3.241655 0.216292 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 2.075909 1.380123 0")
+						PM.DoCommand("CURVEEDITOR FINISH ACCEPT")
+						PM.DoCommand("MODE WORKPLANE_EDIT START ;")
+						PM.DoCommand("MODE WORKPLANE_EDIT POSITION")
+						PM.DoCommand("MODE POSITION CARTESIAN X '6.8'")
+						PM.DoCommand("POSITION ACCEPT")
+						PM.DoCommand("MODE WORKPLANE_EDIT FINISH ACCEPT")
+						lenx = lenx + 6.8
+					end if
+					if divtext = "6" then
+						PM.DoCommand("EDIT PATTERN ; CURVEEDITOR START") 
+						PM.DoCommand("CURVEEDITOR MODE LINE_MULTI")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 5.572456 7.212766 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 4.412456 7.212766 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 2.079004 4.879313 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 2.079004 1.379313 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 3.242195 0.216123 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 5.572195 0.216123 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 6.738921 1.382849 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 6.738921 2.582849 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 5.572195 3.714575 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 2.079004 3.714575 0")
+						PM.DoCommand("CURVEEDITOR FINISH ACCEPT")
+						PM.DoCommand("MODE WORKPLANE_EDIT START ;")
+						PM.DoCommand("MODE WORKPLANE_EDIT POSITION")
+						PM.DoCommand("MODE POSITION CARTESIAN X '6.8'")
+						PM.DoCommand("POSITION ACCEPT")
+						PM.DoCommand("MODE WORKPLANE_EDIT FINISH ACCEPT")
+						lenx = lenx + 6.8
+					end if
+					if divtext = "7" then
+						PM.DoCommand("EDIT PATTERN ; CURVEEDITOR START") 
+						PM.DoCommand("CURVEEDITOR MODE LINE_MULTI")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 2.0 7.283473 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 6.66 7.283473 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 3.167081 0.285452 0")
+						PM.DoCommand("CURVEEDITOR FINISH ACCEPT")
+						PM.DoCommand("MODE WORKPLANE_EDIT START ;")
+						PM.DoCommand("MODE WORKPLANE_EDIT POSITION")
+						PM.DoCommand("MODE POSITION CARTESIAN X '6.7'")
+						PM.DoCommand("POSITION ACCEPT")
+						PM.DoCommand("MODE WORKPLANE_EDIT FINISH ACCEPT")
+						lenx = lenx + 6.7
+					end if
+					if divtext = "8" then
+						PM.DoCommand("EDIT PATTERN ; CURVEEDITOR START") 
+						PM.DoCommand("CURVEEDITOR MODE LINE_MULTI")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 2.08 6.111388 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 3.247686 7.279428 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 5.572548 7.279428 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 6.740234 6.111388 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 6.740234 4.953262 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 5.601555 3.785774 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 6.740234 2.613598 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 6.740234 1.455556 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 5.572639 0.292121 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 3.247595 0.292121 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 2.08 1.455556 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 2.08 2.613697 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 3.213891 3.785774 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 2.08 4.953163 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 2.08 6.111388 0")
+						PM.DoCommand("CURVEEDITOR MODE LINE_SINGLE")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 3.213891 3.785774 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 5.601555 3.785774 0")
+						PM.DoCommand("CURVEEDITOR FINISH ACCEPT")
+						PM.DoCommand("MODE WORKPLANE_EDIT START ;")
+						PM.DoCommand("MODE WORKPLANE_EDIT POSITION")
+						PM.DoCommand("MODE POSITION CARTESIAN X '6.8'")
+						PM.DoCommand("POSITION ACCEPT")
+						PM.DoCommand("MODE WORKPLANE_EDIT FINISH ACCEPT")
+						lenx = lenx + 6.8
+					end if
+					if divtext = "9" then
+						PM.DoCommand("EDIT PATTERN ; CURVEEDITOR START") 
+						PM.DoCommand("CURVEEDITOR MODE LINE_MULTI")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 3.24299 0.288076 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 4.41799 0.288076 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 6.744371 2.614457 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 6.744371 6.114457 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 5.570574 7.288255 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 3.245574 7.288255 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 2.057635 6.100315 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 2.075312 4.952993 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 3.245574 3.782731 0")
+						PM.DoCommand("MODE COORDINPUT COORDINATES 6.744371 3.782731 0")
+						PM.DoCommand("CURVEEDITOR FINISH ACCEPT")
+						PM.DoCommand("MODE WORKPLANE_EDIT START ;")
+						PM.DoCommand("MODE WORKPLANE_EDIT POSITION")
+						PM.DoCommand("MODE POSITION CARTESIAN X '6.8'")
+						PM.DoCommand("POSITION ACCEPT")
+						PM.DoCommand("MODE WORKPLANE_EDIT FINISH ACCEPT")
+						lenx = lenx + 6.8
+					end if
+					if u = len(divs) then
+						PM.DoCommand("MODE WORKPLANE_EDIT START ;") 
+						PM.DoCommand("MODE WORKPLANE_EDIT POSITION")
+						PM.DoCommand("MODE POSITION CARTESIAN x '-"&lenx&"'")
+						PM.DoCommand("POSITION APPLY") 
+						PM.DoCommand("MODE WORKPLANE_EDIT FINISH ACCEPT") 
+						exit for
+					end if
+				next
+				if pl = (num-1) then	
+					PM.DoCommand("DIALOGS MESSAGE OFF") 
+					PM.DoCommand("DIALOGS ERROR OFF") 
+					PM.DoCommand("EDIT PATTERN ; SELECT ALL") 
+					PM.DoCommand("EDIT PATTERN ; MERGE") 
+					PM.DoCommand("DELETE WORKPLANE ;") 
+					PM.DoCommand("ACTIVATE Workplane '"&nowworkplanename&"'") 
+					PM.DoCommand("DIALOGS MESSAGE ON") 
+					PM.DoCommand("DIALOGS ERROR ON") 
+					exit for 
+				else
+					PM.DoCommand("MODE WORKPLANE_EDIT START ;") 
+					PM.DoCommand("MODE WORKPLANE_EDIT POSITION")
+					if fontfx = "1" then	
+						PM.DoCommand("MODE POSITION CARTESIAN y '-100'")
+					end if
+					if fontfx = "2" then	
+						PM.DoCommand("MODE POSITION CARTESIAN y '100'")
+					end if
+					if fontfx = "3" then	
+						PM.DoCommand("MODE POSITION CARTESIAN y '100'")
+					end if
+					if fontfx = "4" then	
+						PM.DoCommand("MODE POSITION CARTESIAN y '-100'")
+					end if
+					PM.DoCommand("POSITION APPLY") 
+					PM.DoCommand("MODE WORKPLANE_EDIT FINISH ACCEPT") 	
+				end if
+			next
+		end sub
+	</script>
+</body>
+</html>
