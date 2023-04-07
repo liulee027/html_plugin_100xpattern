@@ -1,2 +1,2 @@
 # html_plugin_100xpattern
-详细页面参考pmill.com.cn
+一个在powermill浏览器中对检具底板刻百格线标识字的网页插件
